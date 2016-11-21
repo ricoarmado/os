@@ -4,6 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -30,6 +32,12 @@ public class Format extends JDialog {
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        mainFrameLauncher.main(null);
+                    }
+                });
             }
         });
 
@@ -53,7 +61,7 @@ public class Format extends JDialog {
         JFileChooser fileChooser = new JFileChooser();
         if(fileChooser.showDialog(null,"Открыть файл") == JFileChooser.APPROVE_OPTION) textField1.setText(fileChooser.getSelectedFile().getAbsolutePath());
         else textField1.setText("");
-        dispose();
+        //dispose();
     }
 
     private void onCancel() {
@@ -68,21 +76,8 @@ public class Format extends JDialog {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //dispose();
 
-        try {
-            Stage primaryStage = new Stage();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("frame.fxml"));
-            loader.setController(MainFormController.getInstance());
-            Parent root = loader.load();
-            primaryStage.setScene(new Scene(root));
-            primaryStage.setResizable(false);
-            primaryStage.setTitle("GroovyOS");
-            primaryStage.show();
-
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        dispose();
     }
 
     public static void main(String[] args) {

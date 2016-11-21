@@ -26,7 +26,7 @@ class FSImage {
         this.emptyData = new byte[diskPartitionSize - 6238 * 1024]
         // Размер диска - кол-во блоков служ.области* р.кластера
         superBlock = new SuperBlock()
-        superBlock.fsType = "GROOVYFS"
+        superBlock.fsType = "GROOVYFS_TYRSASV"
         superBlock.clusterCount = (int) (diskPartitionSize / diskClusterSize)
         superBlock.clusterSize = CLUSTER_LENGTH
         superBlock.clusterEmptyCount = superBlock.clusterCount

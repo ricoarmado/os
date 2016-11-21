@@ -5,7 +5,9 @@
  */
 class Bitmap {
     def setBytes(byte[] bytes) {
-
+        for (int i = 0; i < bytes.length; i++) {
+            _bits.set(i,bytes[i])
+        }
     }
 
     int findFirstFreeCluster(boolean reserveCluster = false) {
@@ -26,7 +28,6 @@ class Bitmap {
     Bitmap(int bitmapNumClusters){
         _bits = new BitSet(bitmapNumClusters);
     }
-
     byte getByIndex(int index){
         _bits.get(index) as byte
     }

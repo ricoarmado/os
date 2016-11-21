@@ -5,6 +5,8 @@ import GroupManager
 import User
 import UserManager
 import org.apache.commons.codec.digest.DigestUtils
+import org.json.simple.JSONObject
+import org.json.simple.parser.JSONParser
 
 /**
  * Created by stanislavtyrsa on 21.11.16.
@@ -13,7 +15,7 @@ class Sys {
     final String SYSTEM_DIRECTORY_PATH = "/groovyos";
     final String USERS_FILE_PATH = "/groovyos/users";
     final String GROUPS_FILE_PATH = "/groovyos/groups";
-    final String ImagePATH = "image";
+    //final String ImagePATH = "image";
     final String NEWLINE = System.getProperty("line.separator");
     //Root
     final String ROOT_USERNAME = "root";
@@ -36,7 +38,10 @@ class Sys {
         return false;
     }
     public Sys(){
-        kernel = new FileSystem(new File(ImagePATH),ROOT_USER_ID,ROOT_GROUP_ID);
+        JSONParser parser = new JSONParser();
+        JSONObject object = (JSONObject) parser.parse(new FileReader(new File("settings.json")));
+        String image = (String)object.get("image");
+        kernel = new FileSystem(new File(image),ROOT_USER_ID,ROOT_GROUP_ID);
         _userManager = new UserManager();
         _groupManager = new GroupManager();
         loggedIn = false;

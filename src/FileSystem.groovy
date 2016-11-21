@@ -28,12 +28,13 @@ class FileSystem {
         Initialize()
     }
     def Initialize(){
-        RandomAccessFile file = new RandomAccessFile(file,"r")
+        RandomAccessFile file = new RandomAccessFile(file,"rw")
         ByteArrayBuffer buffer = new ByteArrayBuffer()// чтение суперблока
         while (buffer.size() != 65494){
             buffer.write(file.readByte())
         }
-        superBlock.setBytes(buffer.toByteArray())
+        superBlock = new SuperBlock()
+        superBlock.setBytes(buffer)
         buffer.reset()
 
         //чтение битовой карты
@@ -41,6 +42,7 @@ class FileSystem {
         while (buffer.size() != 8192){
             buffer.write(file.readByte())
         }
+        bitmap = new Bitmap(8192)
         bitmap.setBytes(buffer.toByteArray())
         buffer.reset()
         //чтение корневого каталога
@@ -70,7 +72,7 @@ class FileSystem {
         inode.createDate = today.toString()
         inode.editDate = today.toString()
         inode.setAddr(0, (short)freeDataClusterIndex)
-        RandomAccessFile file = new RandomAccessFile(file,"w")
+        RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(freeDirectoryRecordAddress)
         file.write(record.getBytes())
         file.seek(freeInodeAddress)
@@ -101,7 +103,7 @@ class FileSystem {
         inode.createDate = today.toString()
         inode.editDate = today.toString()
         inode.setAddr(0, (short)freeDataClusterIndex)
-        RandomAccessFile file = new RandomAccessFile(file,"w")
+        RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(freeDirectoryRecordAddress)
         file.write(record.getBytes())
         file.seek(freeInodeAddress)
@@ -119,7 +121,7 @@ class FileSystem {
         //ищем свободный инод
         int addressInodes = superBlock.ilistOffset
 
-        RandomAccessFile file = new RandomAccessFile(file,"r")
+        RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(addressInodes)
         Inode freeInode = new Inode()
         int freeDataClusterIndex = bitmap.findFirstFreeCluster()
@@ -154,7 +156,7 @@ class FileSystem {
         int numOfFreeInode = superBlock.findFreeInode()
         if(numOfFreeInode == -1)
             throw new Exception("Нет свободного инода")
-        RandomAccessFile file = new RandomAccessFile(file,"r")
+        RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(addressInodes)
         Inode freeInode = new Inode()
         int freeDataClusterIndex = bitmap.findFirstFreeCluster()
@@ -204,7 +206,7 @@ class FileSystem {
         long address = _root? superBlock.rootOffset : superBlock.rootOffset + 2048 + (clusterIndex - 1) * CLUSTER_SIZE
         long dirRecordsBeginAddress
         int nextClusterIndex = LAST_CLUSTER_ID
-        RandomAccessFile file = new RandomAccessFile(file,"r")
+        RandomAccessFile file = new RandomAccessFile(file,"rw")
         loop{
             file.seek(address)
             dirRecordsBeginAddress = address + 4
@@ -298,7 +300,7 @@ class FileSystem {
         if (count > file.size)
             throw new Exception("Значение кол-ва байтов превышает размер файла")
         long address = superBlock.rootOffset + 2048
-        RandomAccessFile f = new RandomAccessFile(this.file,"r")
+        RandomAccessFile f = new RandomAccessFile(this.file,"rw")
         f.seek(address)
         int currentOffset = 0
         count = (count == -1) ? file.size : count
@@ -423,7 +425,7 @@ class FileSystem {
         String fullPath = Utils.getFullPath(path,_currentDir.Path)
         String parent = Utils.getDirectoryName(fullPath)
         def directory = OpenDirectory(parent) as DirectoryCluster
-        if(!Utils.getAccess(userId,groupId,directory.userID,directory.groupID,new AccessRights(directory.chmod as short)).canExecute()){
+        if(!Utils.getAccess(userId,groupId,directory.userID,directory.groupID,new AccessRights(directory.chmod as short)).canExecute){
             throw new Exception("У вас нет прав, желаем успеха в следующий раз :)")
         }
         String filename = Utils.getFileName(path)
