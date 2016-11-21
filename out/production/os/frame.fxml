@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.input.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="430.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="Пуск">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#changeUserMenuItem_Click" text="Сменить пользователя..." />
+                        <MenuItem mnemonicParsing="false" onAction="#usersMenuItem_Click" text="Пользователи..." />
+                        <SeparatorMenuItem mnemonicParsing="false" onAction="#user" />
+                        <MenuItem mnemonicParsing="false" onAction="#exitMenuItem_Click" text="Выход из системы" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Файловая система">
+                     <items>
+                        <Menu mnemonicParsing="false" text="Создать">
+                          <items>
+                            <MenuItem onAction="#createDirMenuItem_Click" text="Папку">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                              <MenuItem mnemonicParsing="false" onAction="#createFileMenuItem_Click" text="Текстовый файл">
+                                 <accelerator>
+                                    <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                                 </accelerator>
+                              </MenuItem>
+                          </items>
+                        </Menu>
+                        <MenuItem mnemonicParsing="false" onAction="#openMenuItem_Click" text="Открыть">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#copyMenuItem_Click" text="Копировать">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem disable="true" mnemonicParsing="false" onAction="#pasteMenuItem_Click" text="Вставить">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#delMenuItem_Click" text="Удалить">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="DELETE" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#renameMenuItem_Click" text="Переименовать">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="R" control="UP" meta="DOWN" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#propertyMenuItem_Click" text="Свойства" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" onAction="#formatMenuItem_Click" text="Форматировать..." />
+                     </items>
+                </Menu>
+                <Menu mnemonicParsing="false" onAction="#plannerMenuItem_Click" text="Планировщик" />
+              </menus>
+            </MenuBar>
+            <TreeView fx:id="fileSystemTreeView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+            <Label fx:id="systemStatusLabel" text="&lt;Состояние системы&gt;" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
