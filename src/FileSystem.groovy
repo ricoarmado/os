@@ -19,7 +19,7 @@ class FileSystem {
     short userId
     short groupId
     DirectoryCluster _currentDir
-    DirectoryCluster _root
+    Directory _root
 
     FileSystem(File file, short userId, short groupId) {//Создает экземпляр класса фс, выполняя инициализацию структур в памяти
         this.file = file
@@ -46,7 +46,10 @@ class FileSystem {
         bitmap.setBytes(buffer.toByteArray())
         buffer.reset()
         //чтение корневого каталога
-        _root = readDirectoryClusters(0,null,true,null)
+        file.seek(65495+58*32729 + 8193)
+        while (buffer.size() != 2048){
+            buffer.write(file.readByte())
+        }
 
     }
     def flushNewFile(String fileName, String fileExtension, int freeDirectoryRecordAddress, int freeInodeAddress, int freeInodeId, int freeDataClusterIndex){
