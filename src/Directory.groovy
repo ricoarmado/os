@@ -2,6 +2,8 @@
 
 import com.sun.xml.internal.ws.util.ByteArrayBuffer
 
+import java.util.function.Consumer
+
 /**
  * Created by stanislavtyrsa on 21.11.16.
  */
@@ -41,5 +43,10 @@ class Directory {
         buffer.write(extension as byte[])
         buffer.write(inodeNumber)
         return buffer.toByteArray()
+    }
+    List<String> list(){
+        List<String> tmp = new ArrayList<>()
+        directories.each {_d -> tmp.add(new String(_d.filename ) + extension )}
+        tmp
     }
 }

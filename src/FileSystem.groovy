@@ -30,7 +30,7 @@ class FileSystem {
     def Initialize(){
         RandomAccessFile file = new RandomAccessFile(file,"rw")
         ByteArrayBuffer buffer = new ByteArrayBuffer()// чтение суперблока
-        while (buffer.size() != 65494){
+        while (buffer.size() != 65500){
             buffer.write(file.readByte())
         }
         superBlock = new SuperBlock()
@@ -38,15 +38,16 @@ class FileSystem {
         buffer.reset()
 
         //чтение битовой карты
-        file.seek(65495+58*32729)
-        while (buffer.size() != 8192){
+        file.seek(65501+58*32729)
+        while (buffer.size() != 32768){
             buffer.write(file.readByte())
         }
-        bitmap = new Bitmap(8192)
+        bitmap = new Bitmap(32768)
         bitmap.setBytes(buffer.toByteArray())
         buffer.reset()
         //чтение корневого каталога
         _root = readDirectoryClusters(0,null,true,null)
+        _currentDir = _root
 
     }
     def flushNewFile(String fileName, String fileExtension, int freeDirectoryRecordAddress, int freeInodeAddress, int freeInodeId, int freeDataClusterIndex){
@@ -180,7 +181,7 @@ class FileSystem {
         if (isRoot){
             result.Path = "/"
             Inode inode = new Inode()
-            inode.read(file, superBlock+superBlock.ilistOffset)
+            inode.read(file, superBlock.ilistOffset)
             result.createDate = inode.createDate
             result.extension = ""
             result.filename = "/"
@@ -258,7 +259,7 @@ class FileSystem {
         File file = new File(path)
         String[] list = file.list()
         if(path == "/" || list.length == 0){
-            return _root
+            return readDirectoryClusters(0,null,true,null)
         }
         Directory _dir = _root
         Directory curr = _dir

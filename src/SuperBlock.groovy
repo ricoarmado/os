@@ -12,43 +12,45 @@ class SuperBlock {
     int clusterCount
     int clusterEmptyCount
     int inodeCount
-    def inodeEmptyList = new byte[64558]
-    short ilistOffset
-    short bitmapOffset
-    short rootOffset
+    def inodeEmptyList = new byte[65458]
+    int ilistOffset
+    int  bitmapOffset
+    int rootOffset
     byte[] getBytes(){
         ByteArrayBuffer buff = new ByteArrayBuffer()
         buff.write(fsType as byte[])
-        buff.write(clusterSize)
-        buff.write(clusterCount)
-        buff.write(clusterEmptyCount)
-        buff.write(inodeCount)
+        buff.write(ByteBuffer.allocate(2).putShort(clusterSize).array())
+        buff.write(ByteBuffer.allocate(4).putInt(clusterCount).array())
+        buff.write(ByteBuffer.allocate(4).putInt(clusterEmptyCount).array())
+        buff.write(ByteBuffer.allocate(4).putInt(inodeCount).array())
         buff.write(inodeEmptyList)
-        buff.write(ilistOffset)
-        buff.write(bitmapOffset)
-        buff.write(rootOffset)
+        buff.write(ByteBuffer.allocate(4).putInt(ilistOffset).array())
+        buff.write(ByteBuffer.allocate(4).putInt(bitmapOffset).array())
+        buff.write(ByteBuffer.allocate(4).putInt(rootOffset).array())
         buff.toByteArray()
     }
     def setBytes(ByteArrayBuffer buffer){
         byte[] bytes = buffer.getRawData()
-        byte[] tmp = new byte[16]
-        buffer.write(tmp,0,16)
-        fsType = tmp
-        tmp = new byte[2]
+        ByteArrayBuffer buff = new ByteArrayBuffer(16)
+        for(int i = 0; i < 16;i++){
+            buff.write(bytes[i])
+        }
+        fsType = new String(buff.toByteArray())
         clusterSize = (short)(bytes[16] << 8 | bytes[17] & 0xFF)
-        tmp = new byte[4]
-        buffer.write(tmp,18,4)
-        clusterCount = ByteBuffer.wrap(tmp).getInt()
-        buffer.write(tmp,22,4)
-        clusterEmptyCount = ByteBuffer.wrap(tmp).getInt()
-        buffer.write(tmp,26,4)
-        inodeCount = ByteBuffer.wrap(tmp).getInt()
-        tmp = new byte[64558]
-        buffer.write(tmp,30,64558)
-        inodeEmptyList = tmp
-        ilistOffset = (short)(bytes[64588] << 8 | bytes[64589] & 0xFF)
-        bitmapOffset = (short)(bytes[64590] << 8 | bytes[64591] & 0xFF)
-        rootOffset = (short)(bytes[64592] << 8 | bytes[64593] & 0xFF)
+        def arr = bytes[18..21]  as byte[]
+        clusterCount = ByteBuffer.wrap(arr).getInt()
+        arr = bytes[22..25] as byte[]
+        clusterEmptyCount = ByteBuffer.wrap(arr).getInt()
+        arr = bytes[26..30] as byte[]
+        inodeCount = ByteBuffer.wrap(arr).getInt()
+        arr = bytes[30..65487] as byte[]
+        inodeEmptyList = arr
+        arr = bytes[65488..65491] as byte[]
+        ilistOffset = ByteBuffer.wrap(arr).getInt()
+        arr = bytes[65492..65495] as byte[]
+        bitmapOffset = ByteBuffer.wrap(arr).getInt()
+        arr = bytes[65496..65499] as byte[]
+        rootOffset = ByteBuffer.wrap(arr).getInt()
     }
     def markInodeAsBusy(int pos){
         inodeEmptyList[i] = 1

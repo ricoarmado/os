@@ -59,16 +59,22 @@ public class Format extends JDialog {
 
     private void onOK() {
         JFileChooser fileChooser = new JFileChooser();
-        if(fileChooser.showDialog(null,"Открыть файл") == JFileChooser.APPROVE_OPTION) textField1.setText(fileChooser.getSelectedFile().getAbsolutePath());
+        fileChooser.setDialogTitle("Выберите директорию для размещения системных файлов");
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if(fileChooser.showDialog(null,"Открыть файл") == JFileChooser.APPROVE_OPTION) textField1.setText(fileChooser.getSelectedFile().getParent());
         else textField1.setText("");
         //dispose();
     }
 
     private void onCancel() {
         image = new FSImage();
-        image.export(textField1.getText());
+        image.export(textField1.getText() + "/image");
         JSONObject object = new JSONObject();
-        object.put("image",textField1.getText());
+        object.put("image",textField1.getText() + "/image");
+        object.put("path",textField1.getText());
+        object.put("systemPath", textField1.getText() + "/groovyos");
+        object.put("users", textField1.getText() + "/groovyos/users");
+        object.put("groups", textField1.getText() + "/groovyos/groups");
         try(FileWriter fileWriter = new FileWriter("settings.json")) {
             fileWriter.write(object.toJSONString());
             fileWriter.flush();

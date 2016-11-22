@@ -22,23 +22,7 @@ public class launcher {
                 f.main(null);
             }
             else {
-                JSONParser parser = new JSONParser();
-                JSONObject object = (JSONObject) parser.parse(new FileReader(file));
-                String image = (String)object.get("image");
-                try {
-                    Stage primaryStage = new Stage();
-                    FXMLLoader loader = new FXMLLoader(new URL("frame.fxml"));
-                    loader.setController(MainFormController.getInstance());
-                    Parent root = loader.load();
-                    primaryStage.setScene(new Scene(root));
-                    primaryStage.setResizable(false);
-                    primaryStage.setTitle("GroovyOS");
-                    primaryStage.show();
-
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                System.out.println();
+                mainFrameLauncher.main(null);
             }
 
         } catch (Exception e) {

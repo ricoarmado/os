@@ -1,8 +1,13 @@
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseEvent;
 
 import java.io.IOException;
 import java.net.URL;
@@ -16,7 +21,7 @@ public class MainFormController implements Initializable {
     private Sys grOS = null;
     //Singleton
     private static MainFormController instance;
-    public static MainFormController getInstance(){
+    static MainFormController getInstance(){
         if(instance == null){
             instance = new MainFormController();
         }
@@ -31,10 +36,14 @@ public class MainFormController implements Initializable {
         if(!checkUser(usr, pwd)){
             return false;
         }
+        ////////////////////ДОПИСАТЬ
         return true;
     }
     boolean login(String usr,String pwd){
-        grOS.Login(usr, pwd);
+        if(!grOS.Login(usr, pwd)){
+            return false;
+        }
+        buildNode(null);
         return true;
     }
     @FXML
@@ -117,13 +126,41 @@ public class MainFormController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
          grOS = new Sys();
          try {
-        if(grOS.init()){
-           grOS.Initialize();
-           Login login = new Login();
-           login.run(false);
-        }
+             if(grOS.init()){
+                 grOS.Initialize();
+                 Login login = new Login();
+                 login.run(false);
+            }
+             else {
+                 buildNode(null);
+             }
         } catch (IOException e) {
             e.printStackTrace();
          }
+    }
+    private void buildNode(TreeItem<String>metaFileNode){
+        if(metaFileNode == null){
+            metaFileNode = new TreeItem<>("/");
+        }
+        if(metaFileNode.getValue().equals("<пусто>")){
+            return;
+        }
+        for (String s : grOS.openDirectory(metaFileNode.getValue())) {
+            TreeItem<String> tmp = new TreeItem<>(s);
+            tmp.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
+                if(event.getClickCount() == 2){
+                    new Alert(Alert.AlertType.CONFIRMATION,"2 раза").show();
+                }
+                else {
+                    new Alert(Alert.AlertType.INFORMATION,"1 раз").show();
+                }
+            });
+            metaFileNode.getChildren().add(tmp);
+        }
+        if(metaFileNode.getChildren().size() == 0){
+            metaFileNode.getChildren().add(new TreeItem<>("<пусто>"));
+        }
+
+        this.fileSystemTreeView.setRoot(metaFileNode);
     }
 }

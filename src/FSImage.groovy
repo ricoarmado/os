@@ -57,11 +57,13 @@ class FSImage {
             inode.editDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
             inodes.appendInode(inode,i)
         }
-        superBlock.ilistOffset = 65494 + 1 // superblock
-        superBlock.bitmapOffset = superBlock.ilistOffset + 58*32729 + 1 // superblock + ilist
-        superBlock.rootOffset = superBlock.bitmapOffset + 2048 + 1
+        superBlock.ilistOffset = 65500 // superblock
+        superBlock.bitmapOffset = superBlock.ilistOffset + 58*32729 // superblock + ilist
+        superBlock.rootOffset = superBlock.bitmapOffset + 32768 // bitmap first index + bitmap size + 1
     }
     def export(String path){
+        File create = new File(path)
+        create.createNewFile();
         RandomAccessFile file = new RandomAccessFile(path,"rw")
         file.write(superBlock.getBytes())
         file.write(inodes.getBytes())

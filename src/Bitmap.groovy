@@ -6,7 +6,8 @@
 class Bitmap {
     def setBytes(byte[] bytes) {
         for (int i = 0; i < bytes.length; i++) {
-            _bits.set(i,bytes[i])
+            _bits.set(i,bytes[i] == 1 as byte)
+
         }
     }
 

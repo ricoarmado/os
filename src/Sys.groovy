@@ -203,4 +203,7 @@ class Sys {
         randomAccessFile.write(new String(groupsFileData).getBytes());
         randomAccessFile.close();
     }
+    List<String> openDirectory(String path){
+        kernel.OpenDirectory(path).list()
+    }
 }
