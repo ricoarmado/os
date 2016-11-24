@@ -7,9 +7,9 @@ class User {
     short UID
     short GRID
     char[] username = new char[30]
-    char[] password = new char[128]
+    byte[] password
 
-    User(short UID, short GRID, username, password) {
+    User(short UID, short GRID, username, byte[] password) {
         this.UID = UID
         this.GRID = GRID
         this.username = username

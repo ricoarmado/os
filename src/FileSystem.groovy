@@ -201,22 +201,29 @@ class FileSystem {
             result.Path = fullPath
             result.streamAddress = superBlock.rootOffset + 2048 + (clusterIndex - 1) * CLUSTER_SIZE
         }
-        long address = _root? superBlock.rootOffset : superBlock.rootOffset + 2048 + (clusterIndex - 1) * CLUSTER_SIZE
+        if(bitmap.isEmpty())
+            return result
+        long address = isRoot? superBlock.rootOffset : superBlock.rootOffset + 2048 + (clusterIndex - 1) * CLUSTER_SIZE
         long dirRecordsBeginAddress
-        int nextClusterIndex = LAST_CLUSTER_ID
+        int nextClusterIndex = 1
         RandomAccessFile file = new RandomAccessFile(file,"rw")
-        loop{
+        while (nextClusterIndex != LAST_CLUSTER_ID){
             file.seek(address)
             dirRecordsBeginAddress = address + 4
             nextClusterIndex = file.readInt()
             int sizeOfDir = 39
-            Directory[] directories = new Directory[(CLUSTER_SIZE - 4)/sizeOfDir].each {_directory ->
+            Directory[] directories = new Directory[(CLUSTER_SIZE - 4)/sizeOfDir]
+            for(Directory _directory: directories){
+                _directory = new Directory()
                 ByteArrayBuffer buffer = new ByteArrayBuffer()
                 while (buffer.size() != 39)
                     buffer.write(file.readByte())
-                _directory.filename = buffer.toByteArray().swap(0,31)
-                _directory.extension = buffer.toByteArray().swap(32,36)
-                _directory.inodeNumber = (short)(buffer.toByteArray()[37] << 8 | buffer.toByteArray()[38] & 0xFF)
+                def tmp = buffer.getRawData()
+                def arr = tmp[0..31] as byte[]
+                _directory.filename = new String(arr)
+                arr = tmp[32..36] as byte[]
+                _directory.extension = arr
+                _directory.inodeNumber = (short)(tmp[37] << 8 | tmp[38] & 0xFF)
             }
             int fileInodeId
             address = superBlock.ilistOffset
@@ -224,8 +231,8 @@ class FileSystem {
             int sizeOfInode = 58
             DirectoryCluster meta
             Inode inode
-            for(int i = 0; i< directories.length; i++){
-                fileInodeId = directories[i].inodeNumber
+            for(Directory _directory: directories){
+                fileInodeId = _directory.inodeNumber
                 if(fileInodeId != FREE_DIRECTORY_RECORD){
                     file.seek(address + (fileInodeId-1)*sizeOfInode)
                     ByteArrayBuffer buffer = new ByteArrayBuffer()
@@ -247,11 +254,12 @@ class FileSystem {
                     meta.dir = inode.dir
                     meta.system = inode.size
                     meta.readonly = inode.readonly
+
                     result.add(meta)
                 }
             }
             address = superBlock.rootOffset + 2048 + (nextClusterIndex - 1)*CLUSTER_SIZE
-        }until {nextClusterIndex != LAST_CLUSTER_ID}
+        }
         result
     }
 
@@ -280,7 +288,7 @@ class FileSystem {
         currentDirectory.find(dirName)
     }
     byte[] readFile(String path, int offset = 0, int count = -1) {
-        CheckPath(path)
+        Utils.CheckPath(path)
         String fullPath = Utils.getFullPath(path,_currentDir.Path)
         String parentDirectoryPath = Utils.getDirectoryName(fullPath)
         String filename = Utils.getFileName(fullPath)

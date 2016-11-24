@@ -70,5 +70,6 @@ class FSImage {
         file.write(bitmap.getBytes())
         file.write(rootDirectory.getBytes())
         file.write(emptyData)
+        file.writeInt(-1)// признак конца кластеров
     }
 }

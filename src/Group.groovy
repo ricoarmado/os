@@ -5,7 +5,7 @@
  */
 class Group {
     short GRID
-    def groupname = new char[30]
+    char[] groupname = new char[30]
     List<User>users
     Group(GRID, groupname) {
         this.GRID = GRID

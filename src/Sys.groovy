@@ -4,15 +4,18 @@ import Group
 import GroupManager
 import User
 import UserManager
+import com.sun.xml.internal.ws.util.ByteArrayBuffer
 import org.apache.commons.codec.digest.DigestUtils
 import org.json.simple.JSONObject
 import org.json.simple.parser.JSONParser
+
+import java.nio.ByteBuffer
 
 /**
  * Created by stanislavtyrsa on 21.11.16.
  */
 class Sys {
-    final String SYSTEM_DIRECTORY_PATH = "/groovyos";
+    final String SYSTEM_DIRECTORY_PATH = "/";
     final String USERS_FILE_PATH = "/groovyos/users";
     final String GROUPS_FILE_PATH = "/groovyos/groups";
     //final String ImagePATH = "image";
@@ -31,7 +34,8 @@ class Sys {
     User user;
     boolean isFirstRun(){
         try {
-            kernel.OpenDirectory(SYSTEM_DIRECTORY_PATH);
+            String path = kernel.getFile().getParent() + "/groovyos/users"
+            RandomAccessFile randomAccessFile = new RandomAccessFile(new File(path), "rw")
         }catch (Exception ex){
             return true;
         }
@@ -53,10 +57,9 @@ class Sys {
             Group rootGroup = new Group(ROOT_GROUP_ID,ROOT_GROUPNAME);
             rootGroup.addUser(root);
             _groupManager.add(rootGroup);
+            Flush()
             rootUser = root;
             user = root;
-            loggedIn = true;
-            Install();
             loggedIn = false;
             return false;
         }
@@ -65,17 +68,21 @@ class Sys {
         }
     }
     public void Initialize() {
-        byte [] usersFileData = kernel.readFile(USERS_FILE_PATH);
-        byte [] groupsFileData = kernel.readFile(GROUPS_FILE_PATH);
+        String parent = kernel.getFile().getParent()
 
-        String usersFileString = new String(usersFileData);
-        String groupFileString = new String(groupsFileData);
+        RandomAccessFile randomAccessFile = new RandomAccessFile(parent + USERS_FILE_PATH,"rw");
+        String usersFileString = randomAccessFile.readLine()
+        randomAccessFile.close()
+
+        randomAccessFile = new RandomAccessFile(parent + GROUPS_FILE_PATH,"rw");
+        String groupFileString = randomAccessFile.readLine()
+        randomAccessFile.close()
 
         //Чтение групп
         String[] groupRecords = groupFileString.split(NEWLINE);
         for(String tmp : groupRecords){
             String[] fields = tmp.split(" ");
-            short grid = Short.parseShort(fields[0]);
+            short grid = (short) (fields[0].getBytes()[0]<<8 | fields[0].getBytes()[1]);
             String groupName = fields[1];
             Group group = new Group(grid,groupName);
             _groupManager.add(group);
@@ -84,10 +91,10 @@ class Sys {
         String[] userRecords = usersFileString.split(NEWLINE);
         for(String tmp : userRecords){
             String[] fields = tmp.split(" ");
-            short uid = Short.parseShort(fields[0]);
-            short grid = Short.parseShort(fields[1]);
+            short uid = (short) (fields[0].getBytes()[0]<<8 | fields[0].getBytes()[1]);
+            short grid = (short) (fields[1].getBytes()[0]<<8 | fields[1].getBytes()[1]);
             String username = fields[2];
-            byte []passwd = fields[3].getBytes();
+            byte []passwd = fields[3].toCharArray() as byte[];
             User user = new User(uid,grid,username,passwd);
             if(uid == ROOT_USER_ID && grid == ROOT_GROUP_ID){
                 rootUser = user;
@@ -100,43 +107,7 @@ class Sys {
     String[] getGroups(){
         return  _groupManager.getNames();
     }
-    void Install() throws IOException {
-        kernel.CreateDirectory(SYSTEM_DIRECTORY_PATH);
-        kernel.setAttributes(SYSTEM_DIRECTORY_PATH,new Attributes(false,true,false));
-        kernel.CreateFile(USERS_FILE_PATH);
-        kernel.setAttributes(USERS_FILE_PATH, new Attributes(false,true,false));
-        StringBuffer buffer = new StringBuffer();
-        char [] usersFileData;
-        for(User user : _userManager.getUsers()){
-            buffer.append(user.getUID());
-            buffer.append(' ');
-            buffer.append(user.getGRID());
-            buffer.append(' ');
-            buffer.append(user.getUsername());
-            buffer.append(' ');
-            buffer.append(user.getPassword());
-            buffer.append(NEWLINE);
-        }
-        usersFileData = buffer.toString().toCharArray();
-        RandomAccessFile randomAccessFile = new RandomAccessFile(USERS_FILE_PATH,"w");
-        randomAccessFile.write(new String(usersFileData).getBytes());
-        randomAccessFile.close();
-        //Groups;
-        kernel.CreateFile(GROUPS_FILE_PATH);
-        kernel.setAttributes(GROUPS_FILE_PATH,new Attributes(false,true,false));
-        char [] groupsFileData;
-        buffer = new StringBuffer();
-        for(Group group :  _groupManager.getGroups()){
-            buffer.append(group.getGRID());
-            buffer.append(' ');
-            buffer.append(group.getGroupname());
-            buffer.append(NEWLINE);
-        }
-        groupsFileData = buffer.toString().toCharArray();
-        randomAccessFile = new RandomAccessFile(GROUPS_FILE_PATH,"w");
-        randomAccessFile.write(new String(groupsFileData).getBytes());
-        randomAccessFile.close();
-    }
+
     void CopyFile(String pathFrom, String pathTo){
         byte[] data = kernel.readFile(pathFrom);
         DirectoryCluster directory = (DirectoryCluster)kernel.OpenDirectory(pathTo);
@@ -151,9 +122,9 @@ class Sys {
         User user = _userManager.findUser(usr);
         if(user == null)
             return false;
-        byte [] firstHash = new String(user.getPassword()).getBytes();
+        byte [] firstHash = user.getPassword()
         byte [] secondHash = DigestUtils.md5(pwd);
-        if(firstHash.equals(secondHash)){
+        if(firstHash == secondHash){
             this.user = user;
             loggedIn = true;
             return true;
@@ -170,37 +141,50 @@ class Sys {
     public boolean checkUser(String usr){
         return  _userManager.findUser(usr) == null;
     }
+
+
     void Flush() throws IOException {
-        StringBuffer buffer = new StringBuffer();
-        char [] usersFileData;
+
+        ByteArrayBuffer buffer = new ByteArrayBuffer()
         for(User user : _userManager.getUsers()){
-            buffer.append(user.getUID());
-            buffer.append(' ');
-            buffer.append(user.getGRID());
-            buffer.append(' ');
-            buffer.append(user.getUsername());
-            buffer.append(' ');
-            buffer.append(user.getPassword());
-            buffer.append(NEWLINE);
+            buffer.write(ByteBuffer.allocate(2).putShort(user.getUID()).array())
+            buffer.write(new String(" ").getBytes())
+            buffer.write(ByteBuffer.allocate(2).putShort(user.getGRID()).array())
+            buffer.write(new String(" ").getBytes())
+            buffer.write(new String(user.getUsername()).getBytes())
+            buffer.write(new String(" ").getBytes())
+            buffer.write(user.getPassword())
+            buffer.write(NEWLINE.getBytes())
         }
-        usersFileData = buffer.toString().toCharArray();
-        RandomAccessFile randomAccessFile = new RandomAccessFile(USERS_FILE_PATH,"w");
-        randomAccessFile.write(new String(usersFileData).getBytes());
+
+        def file = kernel.getFile()
+        String parent = file.getParent()
+
+
+        if(!new File(parent + USERS_FILE_PATH).exists()){
+            new File(parent + "/groovyos").mkdir()
+            new File(parent+USERS_FILE_PATH).createNewFile()
+        }
+        RandomAccessFile randomAccessFile = new RandomAccessFile(parent + USERS_FILE_PATH,"rw");
+        randomAccessFile.write(buffer.getRawData()[0..buffer.size()-1] as byte[]);
         randomAccessFile.close();
+
         //Groups
-        kernel.CreateFile(GROUPS_FILE_PATH);
-        kernel.setAttributes(GROUPS_FILE_PATH,new Attributes(false,true,false));
-        char [] groupsFileData;
-        buffer = new StringBuffer();
+
+        buffer = new ByteArrayBuffer()
         for(Group group :  _groupManager.getGroups()){
-            buffer.append(group.getGRID());
-            buffer.append(' ');
-            buffer.append(group.getGroupname());
-            buffer.append(NEWLINE);
+            buffer.write(ByteBuffer.allocate(2).putShort(group.getGRID()).array())
+            buffer.write(new String(" ").getBytes())
+            buffer.write(new String(group.getGroupname()).getBytes())
+            buffer.write(new String(" ").getBytes())
+            buffer.write(NEWLINE.getBytes());
         }
-        groupsFileData = buffer.toString().toCharArray();
-        randomAccessFile = new RandomAccessFile(GROUPS_FILE_PATH,"w");
-        randomAccessFile.write(new String(groupsFileData).getBytes());
+
+        if(!new File(parent + GROUPS_FILE_PATH).exists()){
+            new File(parent+GROUPS_FILE_PATH).createNewFile()
+        }
+        randomAccessFile = new RandomAccessFile(parent + GROUPS_FILE_PATH,"rw");
+        randomAccessFile.write(buffer.getRawData()[0..buffer.size()-1] as byte[]);
         randomAccessFile.close();
     }
     List<String> openDirectory(String path){

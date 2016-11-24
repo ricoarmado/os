@@ -45,4 +45,10 @@ class Bitmap {
     boolean isEmpty(int num){
         !_bits.get(num)
     }
+    int size(){
+        _bits.length()
+    }
+    boolean isEmpty(){
+        _bits.isEmpty()
+    }
 }
