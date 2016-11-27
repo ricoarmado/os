@@ -53,15 +53,15 @@ class SuperBlock {
         rootOffset = ByteBuffer.wrap(arr).getInt()
     }
     def markInodeAsBusy(int pos){
-        inodeEmptyList[i] = 1
+        inodeEmptyList[pos] = 1
     }
     boolean isInodeBusy(int pos){
         (inodeEmptyList[pos] == 1 as byte)
     }
     int findFreeInode(){
-        for(byte b in inodeEmptyList){
-            if(b == 1 as byte){
-                return b
+        for (int i = 0; i < inodeEmptyList.length; i++) {
+            if(inodeEmptyList[i] == 0 as byte){
+                return i
             }
         }
         -1

@@ -107,7 +107,6 @@ class Sys {
     String[] getGroups(){
         return  _groupManager.getNames();
     }
-
     void CopyFile(String pathFrom, String pathTo){
         byte[] data = kernel.readFile(pathFrom);
         DirectoryCluster directory = (DirectoryCluster)kernel.OpenDirectory(pathTo);
@@ -137,12 +136,9 @@ class Sys {
         loggedIn = false;
         return true;
     }
-
     public boolean checkUser(String usr){
         return  _userManager.findUser(usr) == null;
     }
-
-
     void Flush() throws IOException {
 
         ByteArrayBuffer buffer = new ByteArrayBuffer()
@@ -187,7 +183,10 @@ class Sys {
         randomAccessFile.write(buffer.getRawData()[0..buffer.size()-1] as byte[]);
         randomAccessFile.close();
     }
-    List<String> openDirectory(String path){
-        kernel.OpenDirectory(path).list()
+    DirectoryCluster openDirectory(String path){
+        kernel.OpenDirectory("/")
+    }
+    def createDirectory(String path){
+        kernel.CreateDirectory(path)
     }
 }

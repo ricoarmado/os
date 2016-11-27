@@ -95,7 +95,7 @@ class Inode {
         file.close()
     }
     def setAddr(int index, short value){
-        byte [] tmp = System.Utils.shortToBytes(value)
+        byte [] tmp = Utils.shortToBytes(value)
         di_addr[index][0] = tmp[0]
         di_addr[index][1] = tmp[1]
     }

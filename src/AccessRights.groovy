@@ -4,9 +4,9 @@
  * Created by stanislavtyrsa on 21.11.16.
  */
 class AccessRights {
-    RightsGroup user
-    RightsGroup group
-    RightsGroup others
+    RightsGroup user = new RightsGroup()
+    RightsGroup group = new RightsGroup()
+    RightsGroup others = new RightsGroup()
     AccessRights(boolean ur, boolean uw, boolean ux, boolean gr, boolean gw, boolean gx, boolean or, boolean ow, boolean ox) {
         user.canRead = ur
         user.canWrite = uw

@@ -1,5 +1,6 @@
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -47,7 +48,7 @@ public class MainFormController implements Initializable {
         if(!grOS.Login(usr, pwd)){
             return false;
         }
-        buildNode(null);
+        buildNode();
         return true;
     }
     @FXML
@@ -77,8 +78,25 @@ public class MainFormController implements Initializable {
     }
 
     @FXML
-    void createDirMenuItem_Click(ActionEvent event) {
-
+    void createDirMenuItem_Click(ActionEvent event) { // Создание каталога
+        TreeItem<String> parent = this.fileSystemTreeView.getSelectionModel().getSelectedItem();
+        if(parent != null && parent.getValue() != "<пусто>"){
+            String path = getPath(parent);
+            if(path == "/")
+                path = "";
+            String name = editDialog();
+            if(name != null && !name.contains("./")){
+                grOS.createDirectory(path + "/" + name);
+                if(parent.getChildren().get(0).getValue() == "<пусто>"){
+                    parent.getChildren().remove(0);
+                    TreeItem<String> item = new TreeItem<>(name);
+                    item.getChildren().add(new TreeItem<String>("<пусто>"));
+                    parent.getChildren().add(item);
+                }
+            }
+            else errorMessage("Имя файла/каталога не задано или содержит недопустимые символы",AlertType.ERROR);
+        }
+        else errorMessage("Выберите каталог", AlertType.ERROR);
     }
 
     @FXML
@@ -140,7 +158,7 @@ public class MainFormController implements Initializable {
                     login();
                 }
                 else {
-                    buildNode(null);
+                    buildNode();
                 }
                 } catch (IOException e) {
                     Runtime.getRuntime().exit(0);
@@ -151,32 +169,21 @@ public class MainFormController implements Initializable {
         }
 
     }
+    private void buildNode(){
+        TreeItem<String>metaFileNode = new TreeItem<>("/");
+        DirectoryCluster cluster = grOS.openDirectory("/");
+        TreeItem<String> item = buildFromItem(metaFileNode, cluster);
+        this.fileSystemTreeView.setRoot(item);
+    }
 
 
-    private void buildNode(TreeItem<String>metaFileNode){
-        if(metaFileNode == null){
-            metaFileNode = new TreeItem<>("/");
+    private TreeItem<String>buildFromItem(TreeItem<String>item,DirectoryCluster cluster){
+        for(DirectoryCluster tmp: cluster.getDirectories()){
+            TreeItem<String>item1 = new TreeItem<>(new String(tmp.getFileName()).trim());
+            item1 = buildFromItem(item1,tmp);
+            item.getChildren().add(item1);
         }
-        if(metaFileNode.getValue().equals("<пусто>")){
-            return;
-        }
-        for (String s : grOS.openDirectory(metaFileNode.getValue())) {
-            TreeItem<String> tmp = new TreeItem<>(s);
-            tmp.addEventHandler(MouseEvent.MOUSE_CLICKED,event -> {
-                if(event.getClickCount() == 2){
-                    errorMessage("2 раза", AlertType.INFORMATION);
-                }
-                else {
-                    errorMessage("1 раз", AlertType.INFORMATION);
-                }
-            });
-            metaFileNode.getChildren().add(tmp);
-        }
-        if(metaFileNode.getChildren().size() == 0){
-            metaFileNode.getChildren().add(new TreeItem<>("<пусто>"));
-        }
-
-        this.fileSystemTreeView.setRoot(metaFileNode);
+        return item;
     }
     private void format() {
         Dialog<String> dialog = new Dialog<>();
@@ -278,5 +285,23 @@ public class MainFormController implements Initializable {
         alert.setHeaderText(headerText);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+    private String getPath(TreeItem<String> parent) {
+        if(parent.getParent() != null){
+            getPath(parent.getParent());
+        }
+        return parent.getValue();
+    }
+    private String editDialog(){
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("GROOVYFS");
+        dialog.setHeaderText("Look, a Text Input Dialog");
+        dialog.setHeaderText("Для создания файла/каталога необходимо ввести его название");
+        dialog.setContentText("Пожалуйста, введите имя:");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()){
+            return result.get();
+        }
+        else return null;
     }
 }

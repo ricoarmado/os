@@ -2,9 +2,13 @@
 
 import Directory
 import Inode
+import com.sun.jmx.remote.internal.ArrayQueue
 import com.sun.xml.internal.ws.util.ByteArrayBuffer
 
 import java.nio.file.NotDirectoryException
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 /**
  * Created by stanislavtyrsa on 21.11.16.
  */
@@ -38,7 +42,7 @@ class FileSystem {
         buffer.reset()
 
         //чтение битовой карты
-        file.seek(65501+58*32729)
+        file.seek(superBlock.bitmapOffset)
         while (buffer.size() != 32768){
             buffer.write(file.readByte())
         }
@@ -51,10 +55,8 @@ class FileSystem {
 
     }
     def flushNewFile(String fileName, String fileExtension, int freeDirectoryRecordAddress, int freeInodeAddress, int freeInodeId, int freeDataClusterIndex){
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
 
-        def record = new Directory()
+        def record = new DirectoryCluster()
         record.filename = fileName.getBytes()
         record.extension = fileExtension.getBytes()
         record.inodeNumber = freeInodeId
@@ -67,8 +69,8 @@ class FileSystem {
         inode.system = false
         inode.dir = false
         inode.readonly = false
-        inode.createDate = today.toString()
-        inode.editDate = today.toString()
+        inode.createDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
+        inode.editDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
         inode.setAddr(0, (short)freeDataClusterIndex)
         RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(freeDirectoryRecordAddress)
@@ -80,15 +82,13 @@ class FileSystem {
         file.write(1)
         superBlock.markInodeAsBusy(freeInodeId)
     }
-    def flushNewDirectory(String dirName, int freeDirectoryRecordAddress, int freeInodeAddress, int freeInodeId, int freeDataClusterIndex){
-        Calendar today = Calendar.getInstance();
-        today.set(Calendar.HOUR_OF_DAY, 0); // same for minutes and seconds
-        def record = new Directory()
+    def flushNewDirectory(String dirName, int freeDirectoryRecordAddress, int freeInodeAddress, int freeInodeId, int freeDataClusterIndex, DirectoryCluster current){
+        def record = new DirectoryCluster()
 
         record.filename = dirName.getBytes()
-        record.extension = ""
+        record.extension = "".getBytes()
         record.inodeNumber = freeInodeId
-
+        current.add(current)
         def inode = new Inode()
         inode.number = freeInodeId
         inode.userID = userId
@@ -98,8 +98,8 @@ class FileSystem {
         inode.system = false
         inode.dir = true
         inode.readonly = false
-        inode.createDate = today.toString()
-        inode.editDate = today.toString()
+        inode.createDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
+        inode.editDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
         inode.setAddr(0, (short)freeDataClusterIndex)
         RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(freeDirectoryRecordAddress)
@@ -110,42 +110,48 @@ class FileSystem {
         file.seek(superBlock.bitmapOffset + freeInodeId)
         file.write(1)
         superBlock.markInodeAsBusy(freeInodeId)
+
     }
+
+    def Flush() {
+        RandomAccessFile file = new RandomAccessFile(this.file, "rw")
+        file.write(superBlock.getBytes())
+        file.seek(superBlock.bitmapOffset)
+        file.write(bitmap.getBytes())
+        file.close()
+    }
+
     def CreateDirectory(String path){
-        String parentPath = _currentDir.filename
+        String parentPath = _currentDir.filename.toString()
         String newDirName =  path
-        Directory backup = _currentDir
-        _currentDir = OpenDirectory(parentPath) as DirectoryCluster
+        DirectoryCluster backup = _currentDir
+        _currentDir = OpenDirectory(parentPath == "" ? "/" : parentPath) as DirectoryCluster
         //ищем свободный инод
         int addressInodes = superBlock.ilistOffset
-
         RandomAccessFile file = new RandomAccessFile(file,"rw")
-        file.seek(addressInodes)
         Inode freeInode = new Inode()
-        int freeDataClusterIndex = bitmap.findFirstFreeCluster()
+        int freeDataClusterIndex = bitmap.findFirstFreeCluster(false)
         int numOfFreeInode = superBlock.findFreeInode()
         if(numOfFreeInode == -1)
             throw new Exception("Нет свободного инода")
         file.seek(addressInodes + 58*numOfFreeInode)
         int freeAddr = addressInodes + 58*numOfFreeInode
-        int freePathAdr = superBlock.rootOffset + 5* numOfFreeInode
-        ByteArrayBuffer buffer = new ByteArrayBuffer()
-        while (buffer.size() != 58){
-            file.read(buffer)
-        }
-        freeInode.setBytes(buffer.toByteArray())
+        int freePathAdr = superBlock.rootOffset + 39 * numOfFreeInode
 
-        flushNewDirectory(newDirName,freePathAdr,freeAddr,numOfFreeInode,freeDataClusterIndex)
+
+        flushNewDirectory(newDirName,freePathAdr,freeAddr,numOfFreeInode,freeDataClusterIndex,_currentDir)
         superBlock.clusterEmptyCount--
         superBlock.inodeEmptyList[numOfFreeInode] = -1
+
         _currentDir = backup
+        Flush()
 
     }
     def CreateFile(String path){
         String fullpath = _currentDir.filename + path
         String parentPath = _currentDir.filename
         String newDirName =  path
-        Directory backup = _currentDir
+        DirectoryCluster backup = _currentDir
         _currentDir = OpenDirectory(parentPath) as DirectoryCluster
         //ищем свободный инод
         int addressFreeInode = -1
@@ -157,7 +163,7 @@ class FileSystem {
         RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(addressInodes)
         Inode freeInode = new Inode()
-        int freeDataClusterIndex = bitmap.findFirstFreeCluster()
+        int freeDataClusterIndex = bitmap.findFirstFreeCluster(false)
 
         file.seek(addressInodes + 58*numOfFreeInode)
         int freeAddr = addressInodes + 58*numOfFreeInode
@@ -178,13 +184,13 @@ class FileSystem {
         DirectoryCluster result = dirToFill? dirToFill : new DirectoryCluster()
         if(!dirToFill)
             result.clear()
-        if (isRoot){
+        if(isRoot){
             result.Path = "/"
             Inode inode = new Inode()
             inode.read(file, superBlock.ilistOffset)
             result.createDate = inode.createDate
-            result.extension = ""
-            result.filename = "/"
+            result.extension = "".getChars()
+            result.filename = "/".getChars()
             result.groupID = inode.groupID
             result.inodeNumber = inode.number
             result.editDate = inode.editDate
@@ -196,81 +202,52 @@ class FileSystem {
             result.system = inode.system
             result.chmod = inode.chmod
             result.readonly = inode.readonly
+            superBlock.markInodeAsBusy(0)
+            bitmap.setClusterState(0,Bitmap.ClusterState.Used)
         }
-        else {
-            result.Path = fullPath
-            result.streamAddress = superBlock.rootOffset + 2048 + (clusterIndex - 1) * CLUSTER_SIZE
-        }
-        if(bitmap.isEmpty())
-            return result
-        long address = isRoot? superBlock.rootOffset : superBlock.rootOffset + 2048 + (clusterIndex - 1) * CLUSTER_SIZE
-        long dirRecordsBeginAddress
-        int nextClusterIndex = 1
-        RandomAccessFile file = new RandomAccessFile(file,"rw")
-        while (nextClusterIndex != LAST_CLUSTER_ID){
+        int address = superBlock.rootOffset
+        int k = 0
+        Queue<DirectoryCluster> directories = new ArrayDeque<>()
+        RandomAccessFile file = new RandomAccessFile(this.file,"rw")
+        file.seek(address)
+        while (k < 2048){
             file.seek(address)
-            dirRecordsBeginAddress = address + 4
-            nextClusterIndex = file.readInt()
-            int sizeOfDir = 39
-            Directory[] directories = new Directory[(CLUSTER_SIZE - 4)/sizeOfDir]
-            for(Directory _directory: directories){
-                _directory = new Directory()
-                ByteArrayBuffer buffer = new ByteArrayBuffer()
-                while (buffer.size() != 39)
-                    buffer.write(file.readByte())
-                def tmp = buffer.getRawData()
-                def arr = tmp[0..31] as byte[]
-                _directory.filename = new String(arr)
-                arr = tmp[32..36] as byte[]
-                _directory.extension = arr
-                _directory.inodeNumber = (short)(tmp[37] << 8 | tmp[38] & 0xFF)
+            ByteArrayBuffer arrayBuffer = new ByteArrayBuffer()
+            while (arrayBuffer.size() != 39){
+                arrayBuffer.write(file.readByte())
             }
-            int fileInodeId
-            address = superBlock.ilistOffset
-            file.seek(address)
-            int sizeOfInode = 58
-            DirectoryCluster meta
-            Inode inode
-            for(Directory _directory: directories){
-                fileInodeId = _directory.inodeNumber
-                if(fileInodeId != FREE_DIRECTORY_RECORD){
-                    file.seek(address + (fileInodeId-1)*sizeOfInode)
-                    ByteArrayBuffer buffer = new ByteArrayBuffer()
-                    while (buffer.size() != 58){
-                        buffer.write(file.readByte())
-                    }
-                    inode = new Inode()
-                    inode.setBytes(buffer.toByteArray())
-                    meta = new DirectoryCluster()
-                    meta.createDate = inode.createDate
-                    meta.extension = directories[i].extension
-                    meta.filename = directories[i].filename
-                    meta.groupID = inode.groupID
-                    meta.userID = inode.userID
-                    meta.editDate = inode.editDate
-                    meta.size = inode.size
-                    meta.chmod = inode.chmod
-                    meta.hiden = inode.hiden
-                    meta.dir = inode.dir
-                    meta.system = inode.size
-                    meta.readonly = inode.readonly
-
-                    result.add(meta)
-                }
-            }
-            address = superBlock.rootOffset + 2048 + (nextClusterIndex - 1)*CLUSTER_SIZE
+            DirectoryCluster dir = new DirectoryCluster()
+            dir.setBytes(arrayBuffer.getRawData())
+            if(!dir.isEmpty())
+                directories.add(dir)
+            address = address + 39
+            k = k+39
         }
+        result = regenerateTree(result,directories,isRoot)
         result
     }
 
-    Directory OpenDirectory(String path) {
+     DirectoryCluster regenerateTree(DirectoryCluster root,Queue<DirectoryCluster> queue, boolean isRoot){
+         DirectoryCluster result =  _root
+         if(result == null)
+             return new DirectoryCluster()
+
+         DirectoryCluster tmp
+         while ((tmp = queue.poll() as DirectoryCluster) != null){
+             result.addMany(tmp,0)
+         }
+
+         result
+    }
+    DirectoryCluster OpenDirectory(String path) {
         File file = new File(path)
         String[] list = file.list()
         if(path == "/" || list.length == 0){
-            return readDirectoryClusters(0,null,true,null)
+            def clusters = readDirectoryClusters(0, null, true, null)
+            return clusters
         }
-        Directory _dir = _root
-        Directory curr = _dir
+        DirectoryCluster _dir = _root
+        DirectoryCluster curr = _dir
         for(int i = 0; i < list.length; i++){
             _dir = ReadDirectory(_currentDir, list[i])
             curr = _dir
@@ -284,7 +261,7 @@ class FileSystem {
         _dir
     }
 
-    static Directory ReadDirectory(DirectoryCluster currentDirectory, String dirName){
+    static DirectoryCluster ReadDirectory(DirectoryCluster currentDirectory, String dirName){
         currentDirectory.find(dirName)
     }
     byte[] readFile(String path, int offset = 0, int count = -1) {
