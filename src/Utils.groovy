@@ -1,6 +1,9 @@
 
 
 import org.apache.commons.io.FilenameUtils
+
+import java.nio.ByteBuffer
+
 /**
  * Created by stanislavtyrsa on 21.11.16.
  */
@@ -77,9 +80,7 @@ class Utils {
         (short)(bytes[0] << 8 | bytes[1] & 0xFF)
     }
     static byte[] shortToBytes(short value) {
-        byte[] returnByteArray = new byte[2];
-        returnByteArray[0] = (byte) (value & 0xff);
-        returnByteArray[1] = (byte) ((value >>> 8) & 0xff);
+        byte[] returnByteArray = ByteBuffer.allocate(2).putShort(value).array()
         return returnByteArray;
     }
 }

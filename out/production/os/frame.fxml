@@ -16,7 +16,7 @@
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#changeUserMenuItem_Click" text="Сменить пользователя..." />
                         <MenuItem mnemonicParsing="false" onAction="#usersMenuItem_Click" text="Пользователи..." />
-                        <SeparatorMenuItem mnemonicParsing="false" onAction="#user" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#exitMenuItem_Click" text="Выход из системы" />
                   </items>
                 </Menu>
@@ -47,7 +47,7 @@
                               <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem disable="true" mnemonicParsing="false" onAction="#pasteMenuItem_Click" text="Вставить">
+                        <MenuItem fx:id="copyMenuItem" disable="true" mnemonicParsing="false" onAction="#pasteMenuItem_Click" text="Вставить">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>

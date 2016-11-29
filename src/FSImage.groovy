@@ -58,7 +58,7 @@ class FSImage {
             inodes.appendInode(inode,i)
         }
         superBlock.ilistOffset = 65500 // superblock
-        superBlock.bitmapOffset = superBlock.ilistOffset + 58*32729 // superblock + ilist
+        superBlock.bitmapOffset = superBlock.ilistOffset + 59*32729 // superblock + ilist
         superBlock.rootOffset = superBlock.bitmapOffset + 32768 // bitmap first index + bitmap size + 1
     }
     def export(String path){

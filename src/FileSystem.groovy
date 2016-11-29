@@ -1,8 +1,4 @@
-
-
-import Directory
 import Inode
-import com.sun.jmx.remote.internal.ArrayQueue
 import com.sun.xml.internal.ws.util.ByteArrayBuffer
 
 import java.nio.file.NotDirectoryException
@@ -13,6 +9,7 @@ import java.time.format.DateTimeFormatter
  * Created by stanislavtyrsa on 21.11.16.
  */
 class FileSystem {
+    final String NEWLINE = System.getProperty("line.separator");
     //int NUM_OF_FREE_DIR = 97
     int CLUSTER_SIZE = 1024
     int LAST_CLUSTER_ID = -1
@@ -54,11 +51,10 @@ class FileSystem {
         _currentDir = _root
 
     }
-    def flushNewFile(String fileName, String fileExtension, int freeDirectoryRecordAddress, int freeInodeAddress, int freeInodeId, int freeDataClusterIndex){
+    def flushNewFile(String fileName, String fileExtension, int freeDirectoryRecordAddress, int freeInodeAddress, int freeInodeId, int freeDataClusterIndex, DirectoryCluster current){
 
         def record = new DirectoryCluster()
         record.filename = fileName.getBytes()
-        record.extension = fileExtension.getBytes()
         record.inodeNumber = freeInodeId
         def inode = new Inode()
         inode.number = freeInodeId
@@ -71,7 +67,17 @@ class FileSystem {
         inode.readonly = false
         inode.createDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
         inode.editDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
-        inode.setAddr(0, (short)freeDataClusterIndex)
+        inode.setAddr(0, (short)freeDataClusterIndex)// устанавливает адрес кластера
+        record.chmod = inode.chmod
+        record.userID = inode.userID
+        record.groupID = inode.groupID
+        record.createDate = inode.createDate
+        record.editDate = inode.editDate
+        record.system = inode.system
+        record.hiden = inode.hiden
+        record.readonly = inode.readonly
+        record.dir = inode.dir
+        current.add(record)
         RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(freeDirectoryRecordAddress)
         file.write(record.getBytes())
@@ -86,9 +92,7 @@ class FileSystem {
         def record = new DirectoryCluster()
 
         record.filename = dirName.getBytes()
-        record.extension = "".getBytes()
         record.inodeNumber = freeInodeId
-        current.add(current)
         def inode = new Inode()
         inode.number = freeInodeId
         inode.userID = userId
@@ -101,6 +105,16 @@ class FileSystem {
         inode.createDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
         inode.editDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
         inode.setAddr(0, (short)freeDataClusterIndex)
+        record.chmod = inode.chmod
+        record.userID = inode.userID
+        record.groupID = inode.groupID
+        record.createDate = inode.createDate
+        record.editDate = inode.editDate
+        record.system = inode.system
+        record.hiden = inode.hiden
+        record.readonly = inode.readonly
+        record.dir = inode.dir
+        current.add(record)
         RandomAccessFile file = new RandomAccessFile(file,"rw")
         file.seek(freeDirectoryRecordAddress)
         file.write(record.getBytes())
@@ -122,22 +136,23 @@ class FileSystem {
     }
 
     def CreateDirectory(String path){
-        String parentPath = _currentDir.filename.toString()
+        String parentPath = new File(path).getParent() == "\\" ? "/" : new File(path).getParent()
         String newDirName =  path
         DirectoryCluster backup = _currentDir
+        parentPath = parentPath.replace('\\','/')
+        if(parentPath.length() > 0 && parentPath.getChars()[0].equals(new String("/").getChars()[0])){
+            parentPath = new StringBuilder(parentPath).deleteCharAt(0).toString()
+        }
+        _currentDir = OpenDirectory("/")
         _currentDir = OpenDirectory(parentPath == "" ? "/" : parentPath) as DirectoryCluster
         //ищем свободный инод
         int addressInodes = superBlock.ilistOffset
-        RandomAccessFile file = new RandomAccessFile(file,"rw")
-        Inode freeInode = new Inode()
         int freeDataClusterIndex = bitmap.findFirstFreeCluster(false)
         int numOfFreeInode = superBlock.findFreeInode()
         if(numOfFreeInode == -1)
             throw new Exception("Нет свободного инода")
-        file.seek(addressInodes + 58*numOfFreeInode)
-        int freeAddr = addressInodes + 58*numOfFreeInode
+        int freeAddr = addressInodes + 59*numOfFreeInode
         int freePathAdr = superBlock.rootOffset + 39 * numOfFreeInode
-
 
         flushNewDirectory(newDirName,freePathAdr,freeAddr,numOfFreeInode,freeDataClusterIndex,_currentDir)
         superBlock.clusterEmptyCount--
@@ -148,36 +163,29 @@ class FileSystem {
 
     }
     def CreateFile(String path){
-        String fullpath = _currentDir.filename + path
-        String parentPath = _currentDir.filename
+        String parentPath = new File(path).getParent() == "\\" ? "/" : new File(path).getParent()
         String newDirName =  path
         DirectoryCluster backup = _currentDir
-        _currentDir = OpenDirectory(parentPath) as DirectoryCluster
+        parentPath = parentPath.replace('\\','/')
+        if(parentPath.length() > 0 && parentPath.getChars()[0].equals(new String("/").getChars()[0])){
+            parentPath = new StringBuilder(parentPath).deleteCharAt(0).toString()
+        }
+        _currentDir = OpenDirectory("/")
+        _currentDir = OpenDirectory(parentPath == "" ? "/" : parentPath) as DirectoryCluster
         //ищем свободный инод
-        int addressFreeInode = -1
         int addressInodes = superBlock.ilistOffset
-        int inodesCount = superBlock.clusterCount
+        int freeDataClusterIndex = bitmap.findFirstFreeCluster(false)
         int numOfFreeInode = superBlock.findFreeInode()
         if(numOfFreeInode == -1)
             throw new Exception("Нет свободного инода")
-        RandomAccessFile file = new RandomAccessFile(file,"rw")
-        file.seek(addressInodes)
-        Inode freeInode = new Inode()
-        int freeDataClusterIndex = bitmap.findFirstFreeCluster(false)
+        int freeAddr = addressInodes + 59*numOfFreeInode
+        int freePathAdr = superBlock.rootOffset + 39 * numOfFreeInode
 
-        file.seek(addressInodes + 58*numOfFreeInode)
-        int freeAddr = addressInodes + 58*numOfFreeInode
-        int freePathAdr = superBlock.rootOffset + 5* numOfFreeInode
-        ByteArrayBuffer buffer = new ByteArrayBuffer()
-        while (buffer.size() != 58){
-            file.read(buffer)
-        }
-        freeInode.setBytes(buffer.toByteArray())
-
-        flushNewFile(new File(path).name, getExtension(path),freePathAdr,freeAddr,numOfFreeInode,freeDataClusterIndex)
+        flushNewFile(path, getExtension(path),freePathAdr,freeAddr,numOfFreeInode,freeDataClusterIndex,_currentDir)
         superBlock.clusterEmptyCount--
         superBlock.inodeEmptyList[numOfFreeInode] = -1
         _currentDir = backup
+        Flush()
 
     }
     DirectoryCluster readDirectoryClusters(int clusterIndex, String fullPath, boolean isRoot, DirectoryCluster dirToFill){
@@ -189,7 +197,6 @@ class FileSystem {
             Inode inode = new Inode()
             inode.read(file, superBlock.ilistOffset)
             result.createDate = inode.createDate
-            result.extension = "".getChars()
             result.filename = "/".getChars()
             result.groupID = inode.groupID
             result.inodeNumber = inode.number
@@ -223,12 +230,26 @@ class FileSystem {
             address = address + 39
             k = k+39
         }
+        for(DirectoryCluster directoryCluster : directories){
+            int inodenum = directoryCluster.inodeNumber
+            Inode inode = new Inode()
+            inode.read(this.file,superBlock.ilistOffset + 59 * inodenum)
+            directoryCluster.chmod = inode.chmod
+            directoryCluster.createDate = inode.createDate
+            directoryCluster.editDate = inode.editDate
+            directoryCluster.hiden = inode.hiden
+            directoryCluster.system = inode.system
+            directoryCluster.dir = inode.dir
+            directoryCluster.readonly = inode.readonly
+            directoryCluster.userID = inode.userID
+            directoryCluster.groupID = inode.groupID
+        }
         result = regenerateTree(result,directories,isRoot)
         result
     }
 
      DirectoryCluster regenerateTree(DirectoryCluster root,Queue<DirectoryCluster> queue, boolean isRoot){
-         DirectoryCluster result =  _root
+         DirectoryCluster result =  root
          if(result == null)
              return new DirectoryCluster()
 
@@ -240,86 +261,64 @@ class FileSystem {
          result
     }
     DirectoryCluster OpenDirectory(String path) {
-        File file = new File(path)
-        String[] list = file.list()
-        if(path == "/" || list.length == 0){
+        if(path == "/"){
             def clusters = readDirectoryClusters(0, null, true, null)
             return clusters
         }
-        DirectoryCluster _dir = _root
-        DirectoryCluster curr = _dir
-        for(int i = 0; i < list.length; i++){
-            _dir = ReadDirectory(_currentDir, list[i])
-            curr = _dir
-            if(_dir != null){
-                _currentDir = _dir as DirectoryCluster
-            }
-            else {
-                throw new NotDirectoryException("Директория не существует. Проверьте правильность пути.")
-            }
-        }
+        DirectoryCluster _dir = _root.lookupDir(path,0)
+
         _dir
     }
-
+    def readAsDir(){
+        _root = readDirectoryClusters(0,null,true,null)
+    }
     static DirectoryCluster ReadDirectory(DirectoryCluster currentDirectory, String dirName){
         currentDirectory.find(dirName)
     }
-    byte[] readFile(String path, int offset = 0, int count = -1) {
-        Utils.CheckPath(path)
-        String fullPath = Utils.getFullPath(path,_currentDir.Path)
-        String parentDirectoryPath = Utils.getDirectoryName(fullPath)
-        String filename = Utils.getFileName(fullPath)
-        String fileNameWithoutExtension = Utils.getFileNameWithoutExtension(fullPath)
-        String extension = Utils.getExtension(fullPath)
+    byte[] readFile(String path) {
+
         DirectoryCluster backup = _currentDir
-        def file = _currentDir.find(filename)
+        def file = OpenDirectory(path)
+
         if(file == null)
             return null
         if(!Utils.getAccess(userId,groupId,_currentDir.userID,_currentDir.groupID,new AccessRights((short)_currentDir.chmod)).canExecute || !Utils.getAccess(userId,groupId,file.userID,file.groupID,new AccessRights((short)file.chmod)).canRead){
             throw new Exception("У вас нет прав доступа")
         }
-        if(offset < 0)
-            throw new Exception("Значение смещения не может быть отрицательным")
-        if (count > file.size)
-            throw new Exception("Значение кол-ва байтов превышает размер файла")
-        long address = superBlock.rootOffset + 2048
+        int sizeOfInode = 59
+        Inode inode = new Inode()
+        inode.read(this.file,superBlock.ilistOffset + file.inodeNumber * sizeOfInode)
+        List<Short>addr = new ArrayList<>()
+
+        for (int i = 0; i < 12; i++) {
+            short pos = (short)(inode.di_addr[i][0] << 8 | inode.di_addr[i][1] & 0xFF)
+            if(pos != 0){
+               addr.add(pos)
+            }
+        }
+        ByteArrayBuffer data = new ByteArrayBuffer()
         RandomAccessFile f = new RandomAccessFile(this.file,"rw")
-        f.seek(address)
-        int currentOffset = 0
-        count = (count == -1) ? file.size : count
-        byte[] data = new byte[count]
-        while (currentOffset + CLUSTER_SIZE - 4 <= offset){
-            currentOffset += CLUSTER_SIZE
+        for (int i = 0; i < addr.size(); i++) {
+            int get = addr.get(i)
+            f.seek(superBlock.rootOffset + 2048 + get*CLUSTER_SIZE)
+            ByteArrayBuffer tmp = new ByteArrayBuffer()
+            while (tmp.size() != 1024){
+                tmp.write(f.readByte())
+            }
+            def split = new String(tmp.getRawData()).split(NEWLINE)
+            for (String str : split)
+            data.write(str.getBytes())
         }
-        int nextCluster = f.readInt()
-        while (currentOffset - offset < count){
-            if(count - currentOffset - offset >= CLUSTER_SIZE - 4){
-                currentOffset += currentOffset += f.read(data, (currentOffset - offset), (CLUSTER_SIZE - 4))
-            }
-            else{
-                currentOffset += f.read(data,currentOffset - offset,count - currentOffset - offset)
-            }
-            if(nextCluster != LAST_CLUSTER_ID){
-                address = superBlock.rootOffset + 2048 + (nextCluster - 1) * CLUSTER_SIZE
-                f.seek(address)
-                nextCluster = f.readInt()
-            }
-        }
+
         _currentDir = backup
-        data
+        data.getRawData()
     }
     int writeFile(String path, byte[] data){
-        CheckPath(path)
-        String fullPath = Utils.getFullPath(path,_currentDir.Path)
-        String parentDirectoryPath = Utils.getDirectoryName(fullPath)
-        String filename = Utils.getFileName(fullPath)
-        String fileNameWithoutExtension = Utils.getFileNameWithoutExtension(fullPath)
-        String extension = Utils.getExtension(fullPath)
+
         //Каждый раз начинаем поиск метафайла с корня
         DirectoryCluster backup = _currentDir
         _currentDir = _root as DirectoryCluster
-        _currentDir = OpenDirectory(parentDirectoryPath) as DirectoryCluster
-        DirectoryCluster file = _currentDir.find(filename)
+        DirectoryCluster file = OpenDirectory(path)
         if(file == null)
             throw new Exception("Файл не найден")
         if(!Utils.getAccess(userId,groupId,_currentDir.userID,_currentDir.groupID,new AccessRights((short)_currentDir.chmod)).canExecute || !Utils.getAccess(userId,groupId,file.userID,file.groupID,new AccessRights((short)file.chmod)).canWrite){
@@ -327,63 +326,76 @@ class FileSystem {
         }
         if(data == null || data.length == 0)
             throw new Exception("Данные не могут быть пустыми")
-        int sizeOfInode = 58
+        int sizeOfInode = 59
 
         Inode inode = new Inode()
-        inode.read(this.file,superBlock.ilistOffset + (file.number - 1) * sizeOfInode)
+        inode.read(this.file,superBlock.ilistOffset + file.inodeNumber * sizeOfInode)
+
         //ищем свободные блоки данных
-        int numNeedDataClusters = data.length / (CLUSTER_SIZE - 4) + ((data.length % (CLUSTER_SIZE - 4) >0) ? 1 : 0)
-        int numberExistDataClusters = inode.size / (CLUSTER_SIZE - 4)+ ((inode.size %(CLUSTER_SIZE - 4) >0) ? 1 : 0)
-        numNeedDataClusters -= numberExistDataClusters + 1
-        if(numNeedDataClusters < 0)
-            numNeedDataClusters = 0
+        int numNeedDataClusters = data.length / CLUSTER_SIZE + 1
         int numberFreeDataClusters = superBlock.clusterEmptyCount
+
         if(numberFreeDataClusters < numNeedDataClusters && numNeedDataClusters > 11)
             throw new Exception("Недостаточно свободного места")
-        int[] freeDataClustersIndexes = new int[1+numberExistDataClusters + numNeedDataClusters]
-        int nextClusterValue = LAST_CLUSTER_ID
-        long address = superBlock.rootOffset + 2048 + (Utils.bytesToShort(inode.di_addr[0]) - 1) * CLUSTER_SIZE
-        RandomAccessFile f = new RandomAccessFile(this.file,"r")
-        f.seek(address)
-        int clusterIndex = 0
-        freeDataClustersIndexes[clusterIndex] = Utils.bytesToShort(inode.di_addr[0])
-        while ((nextClusterValue = f.readInt()) != LAST_CLUSTER_ID){
-            address = superBlock.rootOffset + 2048 + (nextClusterValue - 1) * CLUSTER_SIZE
-            f.seek(address)
-            freeDataClustersIndexes[++clusterIndex] = nextClusterValue
+
+        int[] freeDataClustersIndexes = new int[numNeedDataClusters]
+        int nodeVal = 0//число уже занятых кластеров
+        for (int i = 0; i < 12; i++) {
+            nodeVal = Utils.bytesToShort(inode.di_addr[i])
+            if(nodeVal == 0){
+                nodeVal = i
+                break
+            }
         }
+        for(int i = 0; i < nodeVal; i++){
+            freeDataClustersIndexes[i] = Utils.bytesToShort(inode.di_addr[i])
+        } // считываем уже занятые кластеры
+
+
+        int newAllocatedCluster = 0
         ArrayList<Short>addr = new ArrayList<>()
-        for (int i = 1 + numberExistDataClusters; i < 1+numberExistDataClusters + numNeedDataClusters; i++){
-            int freeDataClusterIndex = bitmap.findFirstFreeCluster(true)
-            if(freeDataClusterIndex < 0 )
-                throw new Exception("Недостаточно места на жестком диске")
-            freeDataClustersIndexes[i] = freeDataClusterIndex
-            addr.add(freeDataClusterIndex as short)
-            superBlock.clusterEmptyCount--
+        for (int i = 0; i < numNeedDataClusters; i++){
+            if(freeDataClustersIndexes[i] == 0){
+                int freeDataClusterIndex = bitmap.findFirstFreeCluster(true)
+                if(freeDataClusterIndex < 0 )
+                    throw new Exception("Недостаточно места на жестком диске")
+                freeDataClustersIndexes[i] = freeDataClusterIndex
+                newAllocatedCluster++
+            }
+            short sh = (short)freeDataClustersIndexes[i]
+            addr.add(sh)
+        }
+        superBlock.clusterEmptyCount -=newAllocatedCluster
+
+        byte[][] newData = new byte[addr.size()]
+        for (int i = 0; i < newData.length; i+= 1024) {
+            if(data.length - newData.length < 1024){
+                byte [] tmp = data[i..(data.length - newData.length)]
+                newData[i] = tmp
+            }
+            else {
+                byte [] tmp = data[i..1024]
+                newData[i] = tmp
+            }
         }
 
         int numberWrittenBytes = 0
-        nextClusterValue = LAST_CLUSTER_ID
-        address = superBlock.rootOffset + 2048 + (Utils.bytesToShort(inode.di_addr[0]) - 1) * CLUSTER_SIZE
-        f.seek(address)
-        for(int clusterNumber = 1; clusterNumber <= numNeedDataClusters; clusterNumber++){
-            nextClusterValue = freeDataClustersIndexes[clusterNumber]
-            f.writeInt(nextClusterValue)
-            f.write(data,numberWrittenBytes,CLUSTER_SIZE - 4)
-            numberWrittenBytes += CLUSTER_SIZE - 4
-            address = superBlock.rootOffset + 2048 + (nextClusterValue - 1) * CLUSTER_SIZE
-            f.seek(address)
+        RandomAccessFile f = new RandomAccessFile(this.file,"rw")
+        for (int i = 0; i < addr.size(); i++) {
+            def get = addr.get(i);
+            def bytes = Utils.shortToBytes(get)
+            inode.di_addr[i][0] = bytes[0]
+            inode.di_addr[i][1] = bytes[1]
+            f.seek(superBlock.rootOffset + 2048 + get*CLUSTER_SIZE)
+            f.write(newData[i])
+            numberWrittenBytes += newData[i].length
+            f.write(NEWLINE.getBytes())
         }
-        nextClusterValue = LAST_CLUSTER_ID
-        f.writeInt(nextClusterValue)
-        f.write(data,numberWrittenBytes, data.length - numberWrittenBytes)
-        numberWrittenBytes += data.length - numberWrittenBytes
-        inode.size = numberWrittenBytes
-        for(int i = 0; i < 11; i++)
-            inode.setAddr(i,addr.get(i))
-        f.seek(superBlock.ilistOffset + (file.inodeNumber - 1) * 58)
-        f.write(inode.getBytes())
+        inode.editDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
+        inode.size += numberWrittenBytes
+        inode.write(this.file,superBlock.ilistOffset + file.inodeNumber * sizeOfInode)
         _currentDir = backup
+        Flush()
         numberWrittenBytes
     }
     def rename(String path, String newName){///////////////////////////////////////////////////ДОПИСАТЬ
@@ -402,29 +414,23 @@ class FileSystem {
         RandomAccessFile f  = new RandomAccessFile(this.file,"rw")
         //f.seek(file.)
     }
-    def setAttributes(String path, Attributes attributes){
-        DirectoryCluster current = _currentDir
-        CheckPath(path)
-        String fullPath = Utils.getFullPath(path,_currentDir.Path)
-        String parent = Utils.getDirectoryName(fullPath)
-        def directory = OpenDirectory(parent) as DirectoryCluster
-        if(!Utils.getAccess(userId,groupId,directory.userID,directory.groupID,new AccessRights(directory.chmod as short)).canExecute){
-            throw new Exception("У вас нет прав, желаем успеха в следующий раз :)")
-        }
-        String filename = Utils.getFileName(path)
-        def file = directory.find(filename)
-        if(file == null){
-            throw new Exception("Каталог не существует")
-        }
+    def setAttributes(DirectoryCluster cluster, PropertyMap map){
+        DirectoryCluster old = cluster
+        cluster.chmod = new AccessRights(map.ur,map.uw,map.ux,map.gr,map.gw,map.gx,map.or,map.ow,map.ox).toInt16()
+        cluster.hiden = map.hidden
+        cluster.system = map.system
+        cluster.readonly = map.readonly
+        cluster.editDate = DateTimeFormatter.ofPattern("yyyMMdd").format(LocalDate.now())
+        int numOfInode = cluster.inodeNumber
         Inode inode = new Inode()
-        int sizeOfInode = 58
-        inode.read(this.file,superBlock.ilistOffset + (file.inodeNumber - 1) * sizeOfInode)
-        inode.system = attributes.system
-        inode.dir = attributes.dir
-        inode.hiden = attributes.hidden
-        inode.readonly = attributes.readOnly
-        inode.write()
-        _currentDir = current
+        inode.read(this.file,superBlock.ilistOffset + 59*numOfInode)
+        inode.chmod = cluster.chmod
+        inode.hiden = cluster.hiden
+        inode.system = inode.system
+        inode.readonly = cluster.readonly
+        inode.editDate = cluster.editDate
+        inode.write(this.file,superBlock.ilistOffset + 59*numOfInode)
+        _root.replace(old,cluster)
     }
     static String getExtension(String fileName) {
         char ch;
@@ -439,5 +445,10 @@ class FileSystem {
             return "";
         else
             return fileName.substring(dotInd+1).toLowerCase();
+    }
+
+    def rename(DirectoryCluster oldFile, String newPath) {
+        def directory = OpenDirectory("/")
+        directory.rename(oldFile,newPath,superBlock.rootOffset  + 39*oldFile.inodeNumber, this.file)
     }
 }

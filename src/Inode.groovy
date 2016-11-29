@@ -65,24 +65,24 @@ class Inode {
         groupID = (short)(bytes[28] << 8 | bytes[29] & 0xFF)
         arr = bytes[30..33] as byte[]
         size = ByteBuffer.wrap(arr).getInt()
-        di_addr[0] = bytes[33..34]
-        di_addr[1] = bytes[35..36]
-        di_addr[2] = bytes[37..38]
-        di_addr[3] = bytes[39..40]
-        di_addr[4] = bytes[41..42]
-        di_addr[5] = bytes[43..44]
-        di_addr[6] = bytes[45..46]
-        di_addr[7] = bytes[47..48]
-        di_addr[8] = bytes[49..50]
-        di_addr[9] = bytes[51..52]
-        di_addr[10] = bytes[53..54]
-        di_addr[11] = bytes[55..57]
+        di_addr[0] = bytes[34..35]
+        di_addr[1] = bytes[36..37]
+        di_addr[2] = bytes[38..39]
+        di_addr[3] = bytes[40..41]
+        di_addr[4] = bytes[42..44]
+        di_addr[5] = bytes[44..46]
+        di_addr[6] = bytes[46..48]
+        di_addr[7] = bytes[48..50]
+        di_addr[8] = bytes[50..52]
+        di_addr[9] = bytes[52..54]
+        di_addr[10] = bytes[54..56]
+        di_addr[11] = bytes[56..58]
     }
     def read(File f, int offset){
         RandomAccessFile file = new RandomAccessFile(f,"rw")
         file.seek(offset)
         ByteArrayBuffer buffer = new ByteArrayBuffer()
-        while (buffer.size() != 58){
+        while (buffer.size() != 59){
             buffer.write(file.readByte())
         }
         this.setBytes(buffer.toByteArray())

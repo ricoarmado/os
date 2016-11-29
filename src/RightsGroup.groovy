@@ -23,4 +23,14 @@ class RightsGroup {
         RightsGroup gr = new RightsGroup(r,w,x)
         return gr
     }
+
+    boolean getCanRead() {
+        return canRead
+    }
+    boolean getCanWrite() {
+        return canWrite
+    }
+    boolean getCanExecute() {
+        return canExecute
+    }
 }

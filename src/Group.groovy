@@ -7,7 +7,7 @@ class Group {
     short GRID
     char[] groupname = new char[30]
     List<User>users
-    Group(GRID, groupname) {
+    Group(GRID, char []groupname) {
         this.GRID = GRID
         this.groupname = groupname
         users = new ArrayList<>()
@@ -31,5 +31,13 @@ class GroupManager{
         List<String> tmp = new ArrayList<>()
         groups.each {_g -> tmp.add(new String(_g.groupname))}
         tmp.toArray() as String[]
+    }
+    List<String>getList(){
+        List<String>array = new ArrayList<>()
+        groups.each {_user -> array.add(new String(_user.getGroupname()))}
+        return array
+    }
+    int getGrid(String grName){
+        groups.find {_group -> new String(_group.groupname).trim() == grName}.getGRID()
     }
 }

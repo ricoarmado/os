@@ -9,7 +9,7 @@ class User {
     char[] username = new char[30]
     byte[] password
 
-    User(short UID, short GRID, username, byte[] password) {
+    User(short UID, short GRID, char[] username, byte[] password) {
         this.UID = UID
         this.GRID = GRID
         this.username = username
@@ -27,5 +27,10 @@ class UserManager {
     }
     User findUser(String name){
         users.find {u -> u.username == name.chars}
+    }
+    List<String>getList(){
+        List<String>array = new ArrayList<>()
+        users.each {_user -> array.add(new String(_user.getUsername()))}
+        return array
     }
 }

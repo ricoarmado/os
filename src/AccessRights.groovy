@@ -58,4 +58,16 @@ class AccessRights {
                 ((others.canWrite?1:0) << 1) |
                 ((others.canExecute?1:0) << 0))
     }
+
+    RightsGroup getUser() {
+        return user
+    }
+
+    RightsGroup getGroup() {
+        return group
+    }
+
+    RightsGroup getOthers() {
+        return others
+    }
 }
