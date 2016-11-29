@@ -274,7 +274,14 @@ public class MainFormController implements Initializable {
 
     @FXML
     void delMenuItem_Click(ActionEvent event) {
-
+        TreeItem<String> parent = this.fileSystemTreeView.getSelectionModel().getSelectedItem();
+        if(parent != null && parent.getValue() != "/"){
+            String str = getPath(parent);
+            DirectoryCluster directoryCluster = grOS.openDirectory(str);
+            grOS.delete(directoryCluster);
+            grOS.readDir();
+            buildNode();
+        }else errorMessage("Нельзя",AlertType.INFORMATION);
     }
 
     @FXML

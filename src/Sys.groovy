@@ -262,4 +262,15 @@ class Sys {
             }
         }
     }
+    def delete(DirectoryCluster cluster){
+        if(cluster.isDir()){
+            for(DirectoryCluster d : cluster.getDirectories()){
+                delete(d)
+            }
+            kernel.deleteFile(cluster)
+        }
+        else {
+            kernel.deleteFile(cluster)
+        }
+    }
 }

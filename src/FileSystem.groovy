@@ -398,22 +398,7 @@ class FileSystem {
         Flush()
         numberWrittenBytes
     }
-    def rename(String path, String newName){///////////////////////////////////////////////////ДОПИСАТЬ
-        DirectoryCluster current = _currentDir
-        CheckPath(path)
-        String fullPath = Utils.getFullPath(path, _currentDir.Path)
-        String parentDirectoryPath = Utils.getDirectoryName(fullPath)
-        String oldName = Utils.getFileName(fullPath)
-        def directory = OpenDirectory(parentDirectoryPath) as DirectoryCluster
-        if(!Utils.getAccess(userId,groupId,directory.userID,directory.groupID,new AccessRights((short)directory.chmod)).canRead || !Utils.getAccess(userId,groupId,directory.userID,directory.groupID,new AccessRights((short)directory.chmod)).canWrite){
-            throw new Exception("У вас нет прав доступа")
-        }
-        def file = directory.find(oldName)
-        if(file == null)
-            throw new FileNotFoundException("Файл или каталог не существует")
-        RandomAccessFile f  = new RandomAccessFile(this.file,"rw")
-        //f.seek(file.)
-    }
+
     def setAttributes(DirectoryCluster cluster, PropertyMap map){
         DirectoryCluster old = cluster
         cluster.chmod = new AccessRights(map.ur,map.uw,map.ux,map.gr,map.gw,map.gx,map.or,map.ow,map.ox).toInt16()
@@ -450,5 +435,27 @@ class FileSystem {
     def rename(DirectoryCluster oldFile, String newPath) {
         def directory = OpenDirectory("/")
         directory.rename(oldFile,newPath,superBlock.rootOffset  + 39*oldFile.inodeNumber, this.file)
+    }
+    def deleteFile(DirectoryCluster file){
+        int sizeOfInode = 59
+        int inodenum = file.inodeNumber
+        Inode inode = new Inode()
+        inode.read(this.file,superBlock.ilistOffset + file.inodeNumber * sizeOfInode)
+        List<Short>addr = new ArrayList<>()
+
+        for (int i = 0; i < 12; i++) {
+            short pos = (short)(inode.di_addr[i][0] << 8 | inode.di_addr[i][1] & 0xFF)
+            if(pos != 0){
+                addr.add(pos)
+            }
+        }
+        file.setFilename(Character.MIN_VALUE)
+        file.write(this.file,superBlock.rootOffset + inodenum * 39)
+        inode.write(this.file,superBlock.ilistOffset + file.inodeNumber * sizeOfInode)
+
+        superBlock.clusterEmptyCount += addr.size()
+        superBlock.inodeEmptyList[inodenum] = 0
+        bitmap.setClusterState(inodenum,Bitmap.ClusterState.Free)
+        Flush()
     }
 }

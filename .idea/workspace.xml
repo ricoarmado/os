@@ -2,52 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="17382f6c-98b5-4a93-8145-c797f63a177d" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/controlsfx_samples_8_40_12.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/fxsampler_1_0_9.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/PropertyMap.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/dictionaries/stanislavtyrsa.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/groovyc.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/os/Directory$_list_closure1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/os/Directory.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/os/MainFormController$2.class" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/AccessRights.class" afterPath="$PROJECT_DIR$/out/production/os/AccessRights.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/DirectoryCluster$_addMany_closure2.class" afterPath="$PROJECT_DIR$/out/production/os/DirectoryCluster$_addMany_closure2.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/DirectoryCluster$_find_closure1.class" afterPath="$PROJECT_DIR$/out/production/os/DirectoryCluster$_find_closure1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/DirectoryCluster$_list_closure3.class" afterPath="$PROJECT_DIR$/out/production/os/DirectoryCluster$_list_closure3.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/DirectoryCluster.class" afterPath="$PROJECT_DIR$/out/production/os/DirectoryCluster.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/FSImage.class" afterPath="$PROJECT_DIR$/out/production/os/FSImage.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/FileSystem.class" afterPath="$PROJECT_DIR$/out/production/os/FileSystem.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/Group.class" afterPath="$PROJECT_DIR$/out/production/os/Group.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/GroupManager.class" afterPath="$PROJECT_DIR$/out/production/os/GroupManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/Inode.class" afterPath="$PROJECT_DIR$/out/production/os/Inode.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/MainFormController$1.class" afterPath="$PROJECT_DIR$/out/production/os/MainFormController$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/MainFormController.class" afterPath="$PROJECT_DIR$/out/production/os/MainFormController.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/RightsGroup.class" afterPath="$PROJECT_DIR$/out/production/os/RightsGroup.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/Sys.class" afterPath="$PROJECT_DIR$/out/production/os/Sys.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/User.class" afterPath="$PROJECT_DIR$/out/production/os/User.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/UserManager.class" afterPath="$PROJECT_DIR$/out/production/os/UserManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/Utils.class" afterPath="$PROJECT_DIR$/out/production/os/Utils.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/os.iml" afterPath="$PROJECT_DIR$/os.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/os/frame.fxml" afterPath="$PROJECT_DIR$/out/production/os/frame.fxml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/settings.json" afterPath="$PROJECT_DIR$/settings.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AccessRights.groovy" afterPath="$PROJECT_DIR$/src/AccessRights.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DirectoryCluster.groovy" afterPath="$PROJECT_DIR$/src/DirectoryCluster.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FSImage.groovy" afterPath="$PROJECT_DIR$/src/FSImage.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FileSystem.groovy" afterPath="$PROJECT_DIR$/src/FileSystem.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Group.groovy" afterPath="$PROJECT_DIR$/src/Group.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Inode.groovy" afterPath="$PROJECT_DIR$/src/Inode.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/MainFormController.java" afterPath="$PROJECT_DIR$/src/MainFormController.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/RightsGroup.groovy" afterPath="$PROJECT_DIR$/src/RightsGroup.groovy" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Sys.groovy" afterPath="$PROJECT_DIR$/src/Sys.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/User.groovy" afterPath="$PROJECT_DIR$/src/User.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Utils.groovy" afterPath="$PROJECT_DIR$/src/Utils.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/frame.fxml" afterPath="$PROJECT_DIR$/src/frame.fxml" />
     </list>
     <ignored path="os.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -70,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="MainFormController.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainFormController.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/MainFormController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="206">
-              <caret line="272" column="0" selection-start-line="272" selection-start-column="0" selection-end-line="272" selection-end-column="0" />
+            <state relative-caret-position="223">
+              <caret line="283" column="0" selection-start-line="283" selection-start-column="0" selection-end-line="283" selection-end-column="0" />
               <folding>
                 <element signature="method#getInstance#0;class#MainFormController#0" expanded="false" />
                 <element signature="method#login#0;class#MainFormController#0" expanded="false" />
@@ -85,6 +43,7 @@
                 <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
                 <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
                 <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+                <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
                 <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
                 <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
                 <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -103,13 +62,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Sys.groovy" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Sys.groovy" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Sys.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="475">
-              <caret line="258" column="35" selection-start-line="258" selection-start-column="35" selection-end-line="258" selection-end-column="35" />
+            <state relative-caret-position="245">
+              <caret line="269" column="0" selection-start-line="269" selection-start-column="0" selection-end-line="269" selection-end-column="0" />
               <folding>
                 <element signature="e#3#15#0" expanded="true" />
+                <element signature="n#!!block;n#copyDir#0;n#!!block;n#Sys#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -118,18 +78,18 @@
       <file leaf-file-name="Bitmap.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Bitmap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+            <state relative-caret-position="638">
+              <caret line="51" column="25" selection-start-line="51" selection-start-column="25" selection-end-line="51" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DirectoryCluster.groovy" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DirectoryCluster.groovy">
+      <file leaf-file-name="FileSystem.groovy" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/FileSystem.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
-              <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+            <state relative-caret-position="289">
+              <caret line="458" column="0" selection-start-line="458" selection-start-column="0" selection-end-line="458" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -138,8 +98,8 @@
       <file leaf-file-name="SuperBlock.groovy" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/SuperBlock.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
-              <caret line="21" column="34" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
+            <state relative-caret-position="563">
+              <caret line="60" column="8" selection-start-line="60" selection-start-column="8" selection-end-line="60" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -176,10 +136,10 @@
         <option value="$PROJECT_DIR$/src/Group.groovy" />
         <option value="$PROJECT_DIR$/src/FSImage.groovy" />
         <option value="$PROJECT_DIR$/src/DirectoryCluster.groovy" />
-        <option value="$PROJECT_DIR$/src/FileSystem.groovy" />
         <option value="$PROJECT_DIR$/src/frame.fxml" />
-        <option value="$PROJECT_DIR$/src/MainFormController.java" />
+        <option value="$PROJECT_DIR$/src/FileSystem.groovy" />
         <option value="$PROJECT_DIR$/src/Sys.groovy" />
+        <option value="$PROJECT_DIR$/src/MainFormController.java" />
       </list>
     </option>
   </component>
@@ -220,9 +180,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -293,6 +250,9 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -697,11 +657,12 @@
       <workItem from="1480388499818" duration="289000" />
       <workItem from="1480395661725" duration="154000" />
       <workItem from="1480413572600" duration="9994000" />
+      <workItem from="1480430301281" duration="2438000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="70223000" />
+    <option name="totallyTimeSpent" value="72661000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1060" extended-state="6" />
@@ -721,7 +682,6 @@
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25104168" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -732,6 +692,7 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32937366" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -750,24 +711,30 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Sys.groovy</url>
-          <line>232</line>
+          <line>265</line>
           <properties />
-          <option name="timeStamp" value="207" />
+          <option name="timeStamp" value="214" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Sys.groovy</url>
-          <line>247</line>
+          <url>file://$PROJECT_DIR$/src/FileSystem.groovy</url>
+          <line>439</line>
           <properties />
-          <option name="timeStamp" value="213" />
+          <option name="timeStamp" value="215" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/FileSystem.groovy</url>
+          <line>451</line>
+          <properties />
+          <option name="timeStamp" value="216" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="214" />
+      <option name="time" value="217" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="new String(cl.getFilename()).trim()" language="Groovy" custom="" />
-        <watch expression="new String(from.getFilename()).trim()" language="Groovy" custom="" />
-        <watch expression="openDirectory(&quot;/&quot;)" language="Groovy" custom="" />
+        <watch expression="new String(d.getFilename()).trim()" language="Groovy" custom="" />
+        <watch expression="new String(cluster.getFilename()).trim()" language="Groovy" custom="" />
+        <watch expression="new String(file.getFilename()).trim()" language="Groovy" custom="" />
       </configuration>
     </watches-manager>
   </component>
@@ -790,6 +757,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -821,6 +789,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -873,6 +842,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -925,6 +895,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -977,6 +948,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -1029,6 +1001,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -1067,6 +1040,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -1105,6 +1079,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -1251,22 +1226,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/SuperBlock.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="21" column="34" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Bitmap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/frame.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder">
         <state />
@@ -1284,22 +1243,63 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="196">
           <caret line="27" column="15" selection-start-line="27" selection-start-column="15" selection-end-line="27" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_77/javafx-src.zip!/javafx/fxml/FXMLLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="284">
+          <caret line="1773" column="0" selection-start-line="1773" selection-start-column="0" selection-end-line="1773" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/SuperBlock.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="563">
+          <caret line="60" column="8" selection-start-line="60" selection-start-column="8" selection-end-line="60" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/DirectoryCluster.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="145" column="0" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+        <state relative-caret-position="297">
+          <caret line="136" column="8" selection-start-line="136" selection-start-column="8" selection-end-line="136" selection-end-column="8" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Bitmap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="638">
+          <caret line="51" column="25" selection-start-line="51" selection-start-column="25" selection-end-line="51" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/FileSystem.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="458" column="0" selection-start-line="458" selection-start-column="0" selection-end-line="458" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Sys.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="245">
+          <caret line="269" column="0" selection-start-line="269" selection-start-column="0" selection-end-line="269" selection-end-column="0" />
+          <folding>
+            <element signature="e#3#15#0" expanded="true" />
+            <element signature="n#!!block;n#copyDir#0;n#!!block;n#Sys#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/MainFormController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="206">
-          <caret line="272" column="0" selection-start-line="272" selection-start-column="0" selection-end-line="272" selection-end-column="0" />
+        <state relative-caret-position="223">
+          <caret line="283" column="0" selection-start-line="283" selection-start-column="0" selection-end-line="283" selection-end-column="0" />
           <folding>
             <element signature="method#getInstance#0;class#MainFormController#0" expanded="false" />
             <element signature="method#login#0;class#MainFormController#0" expanded="false" />
@@ -1310,6 +1310,7 @@
             <element signature="method#createFileMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#openMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#copyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
+            <element signature="method#pasteMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#renameMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#propertyMenuItem_Click#0;class#MainFormController#0" expanded="false" />
             <element signature="method#initialize#0;class#MainFormController#0" expanded="false" />
@@ -1323,32 +1324,6 @@
             <element signature="method#editDialog#0;class#MainFormController#0" expanded="false" />
             <element signature="method#addUserDialog#0;class#MainFormController#0" expanded="false" />
             <element signature="method#addGroupDialog#0;class#MainFormController#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/FileSystem.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="157">
-          <caret line="327" column="0" selection-start-line="327" selection-start-column="0" selection-end-line="327" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_77/javafx-src.zip!/javafx/fxml/FXMLLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="284">
-          <caret line="1773" column="0" selection-start-line="1773" selection-start-column="0" selection-end-line="1773" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Sys.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="258" column="35" selection-start-line="258" selection-start-column="35" selection-end-line="258" selection-end-column="35" />
-          <folding>
-            <element signature="e#3#15#0" expanded="true" />
           </folding>
         </state>
       </provider>
